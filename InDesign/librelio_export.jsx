@@ -1,0 +1,1 @@
+﻿var newFolder = Folder(File.openDialog ('Select the path\/name of the exported file.', '', false).toString());newFolder.create();app.documents[0].exportFile(ExportFormat.PDF_TYPE, File(newFolder.fullName.toString() + '\/' + newFolder.name.toString() + '.pdf'), false, app.pdfExportPresets.itemByName('[Smallest File Size]'));
