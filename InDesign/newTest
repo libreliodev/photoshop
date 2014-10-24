@@ -1,3 +1,5 @@
+#target indesign
+
 var outputFolder, folderName = 'test', folderPath;
 
 function mainUI()
