@@ -1,0 +1,57 @@
+var outputFolder, folderName = 'test', folderPath;
+
+function mainUI()
+	{
+	if (outputFolder != null && folderName != '')
+		{
+		mainDialog.hide();
+		mainDialog.close(33);
+		}
+	else
+		{
+		alert('Choose an output folder and a name.');
+		return;
+		}
+	}
+
+var mainDialog = new Window('dialog', 'Librelio Very Simple Script');
+mainDialog.bounds = 'x:undefined, y:undefined, width:400, height:280';
+
+var outputBrowsePanel = mainDialog.add('panel', 'x:20, y:20, width:360, height:200');
+outputBrowsePanelLabel = outputBrowsePanel.add('statictext', 'x:10, y:5, width:200, height:15', 'OUTPUT FOLDER');
+var browseOutputButton = outputBrowsePanel.add('button', 'x:10, y:25, width:30, height:20', '...');
+browseOutputButton.onClick = function getOutputFolder()
+	{
+	outputFolder = Folder.selectDialog ('CHOOSE OUTPUT FOLDER');
+	if (outputFolder != null)
+		{
+		browseOutputPath.text = outputFolder.fsName;
+		folderPath = outputFolder.fsName;
+		}
+	}
+var browseOutputPath = outputBrowsePanel.add('statictext', 'x:10, y:60, width:340, height:40', '', {name:'Folder', multiline:true, scrolling:true});
+var nameLabel = outputBrowsePanel.add('statictext', 'x:10, y:110, width:340, height:15', 'NAME', {name:'Name', multiline:false, scrolling:false});
+var nameBox = outputBrowsePanel.add('edittext', 'x:10, y:135, width:340, height:40', 'test', {multiline:false});
+nameBox.onChange = function getName()
+	{
+	folderName = nameBox.text;
+	}
+
+var runButton = mainDialog.add('button', 'x:40, y:240, width:120, height:20', 'RUN');
+runButton.onClick = mainUI;
+var cancelButton = mainDialog.add('button', 'x:240, y:240, width:120, height:20', 'Cancel');
+mainDialog.defaultElement = runButton;
+mainDialog.cancelElement = cancelButton;
+mainDialog.center();
+var myReturn = mainDialog.show();
+
+if (myReturn == 33)
+	{
+	try
+		{
+		var newFolder = Folder(folderPath + '\/' + folderName);
+		newFolder.create();
+		app.documents[0].exportFile(ExportFormat.PDF_TYPE, File(newFolder.fullName.toString() + '\/' + folderName + '.pdf'), false, app.pdfExportPresets.itemByName('[Smallest File Size]'));
+		}
+	catch(nameErr){alert('The name contained forbidden characters (e.g. :, \/ etc.).');}
+	}
